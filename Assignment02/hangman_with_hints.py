@@ -111,6 +111,7 @@ def print_turn_helper_message(secret_word, guesses, letters_guessed):
 	print("\tI am thinking of a word that is " + str(len(secret_word)) + " letters long.")
 	print("\tYou have " + str(guesses) + " guesses left.")
 	print("\tAvailable letters: " + get_available_letters(letters_guessed))
+	print("\tYou can enter * for hints.")
 
 def total_score (guesses, secret_word):
 	unique_letters = list(set(secret_word))
@@ -347,13 +348,13 @@ if __name__ == "__main__":
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
     
-    secret_word = choose_word(wordlist)
-    hangman(secret_word)
+    #secret_word = choose_word(wordlist)
+    #hangman(secret_word)
 
 ###############
     
     # To test part 3 re-comment out the above lines and 
     # uncomment the following two lines. 
     
-    # secret_word = choose_word(wordlist)
-    # hangman_with_hints(secret_word)
+    secret_word = choose_word(wordlist)
+    hangman_with_hints(secret_word)
