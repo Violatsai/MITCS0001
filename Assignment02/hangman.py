@@ -153,13 +153,24 @@ def hangman(secret_word):
 		
 		#step 2: make sure input is a valid letter
     	guess_input = input("\tPlease guess a letter: ")
-    	if str.lower(guess_input) not in string.ascii_lowercase or str.lower(guess_input) in letters_guessed:
+    	if str.lower(guess_input) not in string.ascii_lowercase:
     		warnings = warnings - 1
-    		print("\tOops! That is not a valid letter, or has been guessed. You have " + str(warnings) + " warnings left")
+    		print("\tOops! That is not a valid letter.") 
+            if warnings > -1:
+                print("\tYou have " + str(warnings) + " warnings left")
     		print("\t\t" + get_guessed_word(secret_word, letters_guessed))
     		if warnings <= -1:
     			guesses = guesses - 1
     		continue
+        if str.lower(guess_input) in letters_guessed:
+            warnings = warnings - 1
+            print("\tOops! You've already guessed that letter.")
+            if warnings > -1:
+                print("You have " + str(warnings) + " warnings left")
+            print("\t\t" + get_guessed_word(secret_word, letters_guessed))
+            if warnings <= -1:
+                guesses = guesses - 1
+            continue
     	letters_guessed.append(guess_input)
     	#step 3: handling guessed letters
     	if guess_input not in list(secret_word):
