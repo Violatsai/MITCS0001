@@ -247,7 +247,6 @@ def test_wildcard(word_list):
     if not failure:
         print("SUCCESS: test_wildcard()")
 
-
 word_list = load_words()
 print("----------------------------------------------------------------------")
 print("Testing get_word_score...")
