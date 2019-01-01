@@ -220,16 +220,18 @@ def is_valid_word(word, hand, word_list):
     			return True
     		else: 
     			continue
+    	print("That is not a valid word. Please choose another word.")
     	return False
     else:
     	if word_in_lowercase not in word_list:
-    		return False
+            print("That is not a valid word. Please choose another word.")
+            return False
     	else:
     		for char in word_in_lowercase:
     			if char in hand_copy.keys() and hand_copy[char] > 0:
     				hand_copy[char] = hand_copy[char] - 1
-    				continue
     			else:
+    				print("Some of the characters used are not included in the hand.")
     				return False
     		return True		
 
@@ -288,19 +290,19 @@ def play_hand(hand, word_list):
     word = str(input("Enter word, or !! to indicate that you are finished:"))
     while calculate_handlen(hand) != 0:
         if word == "!!":
-            print("Total score: " + str(Total_score) + "points.")
+            print("Total score: " + str(Total_score) + " points.")
             break
         else:    
             if is_valid_word(word, hand, word_list) == True:
                 current_score = get_word_score(word, n)
                 Total_score += current_score 
-                print (word + " earned " + str(current_score) + " points. Total: " + str(Total_score) + "points.") 
+                print (word + " earned " + str(current_score) + " points. Total: " + str(Total_score) + " points.") 
                 hand = update_hand(hand, word)
             else:
-                print("That is not a valid word. Please choose another word.")
+                #is_valid_word(word, hand, word_list, True)
                 hand = update_hand(hand, word)
         if calculate_handlen(hand) == 0:
-            print("Ran out of letters. Total score: " + str(Total_score) + "points")
+            print("Ran out of letters. Total score: " + str(Total_score) + " points")
             break
         else:
             display_hand(hand)
@@ -418,7 +420,7 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
-    n = 8
+    n = 20
     hand = deal_hand(n)
     play_hand(hand, word_list)
     #play_game(word_list)
