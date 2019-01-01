@@ -67,49 +67,45 @@ def get_frequency_dict(sequence):
 # Problem #1: Scoring a word
 #
 def get_word_score(word, n):
-	word_length = len(word)
-	if word_length == 0:
-		return 0
+	word_length = int(len(word))
+	word_in_lowercase = word.lower()
+	initial_score == 0
+	#first component 
+	for char in word_in_lowercase:
+		first_component_score = initial_score + SCRABBLE_LETTER_VALUES[char]
+	#second component
+	if 7*word_length + 3*(n - word_length) > 1:
+		second_component_score = 7*word_length + 3*(n - word_length)
 	else:
-		word_in_lowercase = word.lower()
-		first_part_score = 0
-		second_part_score = 0
-		#first component 
-		for char in word_in_lowercase:
-			first_part_score += SCRABBLE_LETTER_VALUES[char]
-		#second component
-		if 7*word_length - 3*(n - word_length) > 1:
-			second_part_score = 7*word_length - 3*(n - word_length)
-		else:
-			second_part_score = 1
-		#total score
-		total_word_score = first_part_score * second_part_score
-		return total_word_score
+		second_component_score = 1
+	#total score
+	total_word_score = first_component_score + second_component_score
+	return total_word_score
+    
+    """
+    Returns the score for a word. Assumes the word is a
+    valid word.
 
-	"""
-	Returns the score for a word. Assumes the word is a
-	valid word.
-	
-	You may assume that the input word is always either a string of letters, 
-	or the empty string "". You may not assume that the string will only contain 
-	lowercase letters, so you will have to handle uppercase and mixed case strings 
-	appropriately. 
-	
+    You may assume that the input word is always either a string of letters, 
+    or the empty string "". You may not assume that the string will only contain 
+    lowercase letters, so you will have to handle uppercase and mixed case strings 
+    appropriately. 
+
 	The score for a word is the product of two components:
-	
+
 	The first component is the sum of the points for letters in the word.
 	The second component is the larger of:
-	 1, or
-	 7*wordlen - 3*(n-wordlen), where wordlen is the length of the word
-	 and n is the hand length when the word was played
-	
+            1, or
+            7*wordlen - 3*(n-wordlen), where wordlen is the length of the word
+            and n is the hand length when the word was played
+
 	Letters are scored as in Scrabble; A is worth 1, B is
 	worth 3, C is worth 3, D is worth 2, E is worth 1, and so on.
-	
-	word: string
-	n: int >= 0
-	returns: int >= 0
-	"""
+
+    word: string
+    n: int >= 0
+    returns: int >= 0
+    """
     
     
 
@@ -186,15 +182,8 @@ def update_hand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
-    new_hand = hand.copy()
-    word_in_lowercase = word.lower()
-    for char in word_in_lowercase:
-    	if char in new_hand.keys() and new_hand[char] > 0:
-    		new_hand[char] = new_hand[char] - 1
-    	else:
-    		pass
-    return new_hand
-    
+
+    pass  # TO DO... Remove this line when you implement this function
 
 #
 # Problem #3: Test word validity
@@ -210,18 +199,8 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     returns: boolean
     """
-    word_in_lowercase = word.lower()
-    hand_copy = hand.copy()
-    if word_in_lowercase not in word_list:
-    	return False
-    else:
-    	for char in word_in_lowercase:
-    		if char in hand_copy.keys() and hand_copy[char] > 0:
-    			hand_copy[char] = hand_copy[char] - 1
-    			continue
-    		else:
-    			return False
-    	return True		
+
+    pass  # TO DO... Remove this line when you implement this function
 
 #
 # Problem #5: Playing a hand
