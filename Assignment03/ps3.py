@@ -283,7 +283,6 @@ def play_hand(hand, word_list):
       
     """
     Total_score = 0
-    n = calculate_handlen(hand)
     print("Current hand: ")
     display_hand(hand)
     word = str(input("Enter word, or !! to indicate that you are finished:"))
@@ -419,6 +418,7 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
-    hand = {"a":2, "c":2, "o":1, "t":2}
+    n = 8
+    hand = deal_hand(n)
     play_hand(hand, word_list)
     #play_game(word_list)
