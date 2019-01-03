@@ -386,6 +386,25 @@ def substitute_hand(hand, letter):
     	hand_replaced[new_letter] = num_of_occurence
     	return hand_replaced
     
+# Function for performing step 1 in game
+def check_substitute_letter_availability( \
+		num_of_letter_substitution_used,  \
+		hand                              \
+	):
+    hand_local = hand.copy()
+    if num_of_letter_substitution_used == 0:
+    	letter_substitution = str(input("Would you like to substitute a letter? Please enter yes or no: "))
+    	assert letter_substitution == "yes" or letter_substitution == "no", "Invalid answer. Please enter yes or no."
+    	if letter_substitution == "yes":
+    		intended_letter = str(input("Which letter would you like to replace: "))
+    		hand_local = substitute_hand(hand_local, intended_letter)
+    		display_hand(hand_local)
+    		num_of_letter_substitution_used += 1
+    		return num_of_letter_substitution_used, hand_local
+    	if letter_substitution == "no":
+    		return num_of_letter_substitution_used, hand_local
+    else:
+    	return num_of_letter_substitution_used, hand_local
     
 def play_game(word_list):
     """
@@ -425,23 +444,21 @@ def play_game(word_list):
     Total_score   = 0
     current_round = 0
     
-    display_hand(hand)
-    
+    '''
+    One round is divided into three stages:
+      1. Check if substitution is available
+      2. Play hand for this round
+      3. Check if replay is available
+    '''
     while current_round < num_of_hands:
-    	print("===========================\n          ROUND {}\n===========================".format(current_round + 1))
-    	if num_of_letter_substitution_used == 0:
-    		letter_substitution = str(input("Would you like to substitute a letter? Please enter yes or no: "))
-    		assert letter_substitution == "yes" or letter_substitution == "no", "Invalid answer. Please enter yes or no."
-    		if letter_substitution == "yes":
-    			intended_letter = str(input("Which letter would you like to replace: "))
-    			hand = substitute_hand(hand, intended_letter)
-    			num_of_letter_substitution_used += 1
-    		if letter_substitution == "no":
-    			pass
-    	else:
-    		pass
-
+    	print("===========================\n          ROUND {}".format(current_round + 1))
+    	print("Substitution Left: {}\nReplay Left: {}".format(1 - num_of_letter_substitution_used, 1 - num_of_replay))
+    	print("===========================")
     	display_hand(hand)
+    	# Stage 1
+    	num_of_letter_substitution_used, hand = \
+    		check_substitute_letter_availability( num_of_letter_substitution_used, hand )
+
     	hand_in_first_round = hand.copy()
     	word = str(input("Enter word, or !! to indicate that you are finished:"))
     	while calculate_handlen(hand) != 0:
