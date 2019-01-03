@@ -498,17 +498,20 @@ def play_game(word_list):
     current_round = 0
     
     '''
-    One round is divided into three stages:
+    One round is divided into five stages:
+      0. Print helper messages
       1. Check if substitution is available
       2. Play hand for this round
       3. Check if replay is available
       4. Miscellaneous tasks
     '''
     while current_round < num_of_hands:
+    	# Stage 0
     	print("===========================\n          ROUND {}".format(current_round + 1))
     	print("Substitution Left: {}\nReplay Left: {}\nTotal Score: {}".format(1 - num_of_letter_substitution_used, 1 - num_of_replay_used, total_score))
     	print("===========================")
     	display_hand(hand)
+    	
     	# Stage 1
     	num_of_letter_substitution_used, hand = \
     		check_substitute_letter_availability(num_of_letter_substitution_used, hand)
