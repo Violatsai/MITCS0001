@@ -128,7 +128,7 @@ def display_hand(hand):
 
     hand: dictionary (string -> int)
     """
-    
+    print("Current hand: ")
     for letter in hand.keys():
         for j in range(hand[letter]):
              print(letter, end=' ')      # print all on the same line
@@ -285,7 +285,6 @@ def play_hand(hand, word_list):
       
     """
     Total_score = 0
-    print("Current hand: ")
     display_hand(hand)
     word = str(input("Enter word, or !! to indicate that you are finished:"))
     while calculate_handlen(hand) != 0:
@@ -374,16 +373,16 @@ def substitute_hand(hand, letter):
     letter: string
     returns: dictionary (string -> int)
     """
-    all_letters = VOWELS + CONSONANTS
+    available_letters = VOWELS + CONSONANTS
     hand_replaced = hand.copy()
     if letter not in hand.keys():
     	return hand
     else:
-    	num_of_occurence = int(hand_replaced.get(letter))
+    	num_of_occurence = hand_replaced[letter]
     	del hand_replaced[letter]
     	for char in hand_replaced.keys():
-    		updated_all_letters = all_letters.replace(char, "")
-    	new_letter = random.choice(updated_all_letters)
+    		available_letters = available_letters.replace(char, "")
+    	new_letter = random.choice(available_letters)
     	hand_replaced[new_letter] = num_of_occurence
     	return hand_replaced
     
@@ -423,12 +422,13 @@ def play_game(word_list):
     num_of_hands = int(input("Enter total number of hands: "))
     num_of_letter_substitution_used = 0
     num_of_replay = 0
-    Total_score = 0
+    Total_score   = 0
     current_round = 0
-    print("Current hand: ")
+    
     display_hand(hand)
     
     while current_round < num_of_hands:
+    	print("===========================\n          ROUND {}\n===========================".format(current_round + 1))
     	if num_of_letter_substitution_used == 0:
     		letter_substitution = str(input("Would you like to substitute a letter? Please enter yes or no: "))
     		assert letter_substitution == "yes" or letter_substitution == "no", "Invalid answer. Please enter yes or no."
@@ -441,7 +441,6 @@ def play_game(word_list):
     	else:
     		pass
 
-    	print("Current hand: ")
     	display_hand(hand)
     	hand_in_first_round = hand.copy()
     	word = str(input("Enter word, or !! to indicate that you are finished:"))
@@ -479,13 +478,11 @@ def play_game(word_list):
     		if replay_this_hand == "yes":
     			hand = hand_in_first_round
     			score_from_first_try = Total_score
-    			print("Current hand: ")
-    			display_hand(hand)
+    			#display_hand(hand)
     			num_of_replay += 1
     		if replay_this_hand == "no":
     			hand = deal_hand(n)
-    			print("Current hand: ")
-    			display_hand(hand)
+    			#display_hand(hand)
     			current_round += 1
     	else:
     		hand = deal_hand(n)
