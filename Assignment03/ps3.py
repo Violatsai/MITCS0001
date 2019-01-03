@@ -374,9 +374,19 @@ def substitute_hand(hand, letter):
     letter: string
     returns: dictionary (string -> int)
     """
+    all_letters = VOWELS + CONSONANTS
+    hand_replaced = hand.copy()
+    if letter not in hand.keys():
+    	return hand
+    else:
+    	num_of_occurence = int(hand[letter])
+    	del hand_replaced[letter]
+    	for char in hand_replaced.keys():
+    		updated_all_letters = all_letters.replace(char, "")
+    	new_letter = random.choice(updated_all_letters)
+    	hand_replaced[new_letter] = num_of_occurence
+    	return hand_replaced
     
-    pass  # TO DO... Remove this line when you implement this function
-       
     
 def play_game(word_list):
     """
@@ -408,8 +418,70 @@ def play_game(word_list):
 
     word_list: list of lowercase strings
     """
+    n = HAND_SIZE
+    hand = deal_hand(n)
+    num_of_hands = int(input("Enter total number of hands: "))
+    num_of_letter_substitution_used = 0
+    num_of_replay = 0
+    Total_score = 0
+    current_round = 0
+    print("Current hand: ")
+    display_hand(hand)
     
-    #print("play_game not implemented.") # TO DO... Remove this line when you implement this function
+    while current_round < num_of_hands:
+    	if num_of_letter_substitution_used == 0:
+    		letter_substitution = str(input("Would you like to substitute a letter? Please enter yes or no."))
+    		assert letter_substitution == "yes" or letter_substitution == "no", "Invalid answer. Please enter yes or no."
+    		if letter_substitution == "yes":
+    			intended_letter = str(input("Which letter would you like to replace: "))
+    			hand = substitute_hand(hand, intended_letter)
+    			num_of_letter_substitution_used += 1
+    		if letter_substitution == "no":
+    			pass
+    	else:
+    		pass
+
+    	print("Current hand: ")
+    	display_hand(hand)
+    	hand_in_first_round = hand.copy()
+    	word = str(input("Enter word, or !! to indicate that you are finished:"))
+    	while calculate_handlen(hand) != 0:
+    		if word == "!!":
+    			print("Total score: " + str(Total_score) + " points.")
+    			break
+    		else:    
+    			if is_valid_word(word, hand, word_list) == True:
+    				current_score = get_word_score(word, n)
+    				Total_score += current_score 
+    				print (word + " earned " + str(current_score) + " points. Total: " + str(Total_score) + " points.") 
+    				hand = update_hand(hand, word)
+    			else:
+    				hand = update_hand(hand, word)
+    		if calculate_handlen(hand) == 0:
+    			print("Ran out of letters. Total score: " + str(Total_score) + " points")
+    			break
+    		else:
+    			display_hand(hand)
+    			word = str(input("Enter word, or !! to indicate that you are finished:"))
+    	
+    	if num_of_replay == 0:
+    		replay_this_hand = str(input("Would you like to replay the hand? Please enter yes or no."))
+    		assert replay_this_hand == "yes" or replay_this_hand == "no", "Invalid answer. Please enter yes or no."
+    		if replay_this_hand == "yes":
+    			hand = hand_in_first_round
+    			print("Current hand: ")
+    			display_hand(hand)
+    			num_of_replay += 1
+    		if replay_this_hand == "no":
+    			hand = deal_hand(n)
+    			current_round += 1
+    	else:
+    		hand = deal_hand(n)
+    		current_round += 1
+
+    print("End of Game.")
+    return Total_score
+    
     
 
 
@@ -420,7 +492,6 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
-    n = 20
-    hand = deal_hand(n)
-    play_hand(hand, word_list)
-    #play_game(word_list)
+    #play_hand(hand, word_list)
+    Total_score = play_game(word_list)
+    print("Your total score is: " + str(Total_score))
