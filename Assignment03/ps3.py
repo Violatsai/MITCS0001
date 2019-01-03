@@ -398,14 +398,67 @@ def check_substitute_letter_availability( \
     	if letter_substitution == "yes":
     		intended_letter = str(input("Which letter would you like to replace: "))
     		hand_local = substitute_hand(hand_local, intended_letter)
-    		display_hand(hand_local)
     		num_of_letter_substitution_used += 1
     		return num_of_letter_substitution_used, hand_local
     	if letter_substitution == "no":
     		return num_of_letter_substitution_used, hand_local
     else:
+    	print("No substitutions available, continuing...")
     	return num_of_letter_substitution_used, hand_local
+
+# Function for performing stage 2 in game
+def play_single_round(hand, n):
+    hand_local = hand.copy()
+    point_for_this_round = 0
+    display_hand(hand_local)
     
+    while calculate_handlen(hand) != 0:
+    	word = str(input("Enter word, or !! to indicate that you are finished: "))
+    	# Process word and check if it is exit code "!!"
+    	if word == "!!":
+    		break
+    	else:    
+    		if is_valid_word(word, hand_local, word_list) == True:
+    			current_point = get_word_score(word, n)
+    			point_for_this_round += current_point 
+    			print ("[[ " + word + " ]]" + " earned " + str(current_point) + " points. Accumulated points for this round: " + str(point_for_this_round) + " points.") 
+    			hand_local = update_hand(hand_local, word)
+    		else:
+    			hand_local = update_hand(hand_local, word)
+    	# Display updated hand
+    	display_hand(hand_local)
+    	# Decide whether to continue:
+    	if calculate_handlen(hand_local) == 0:
+    		print("Ran out of letters. Accumulated points for this round: " + str(point_for_this_round) + " points")
+    		break
+    return point_for_this_round
+
+# Function for performing stage 3 in game
+def attempt_retry( \
+		num_of_replay_used, \
+		hand, \
+		point_from_first_try, \
+		n):
+    if num_of_replay_used == 0:
+    	replay_this_hand = str(input("Would you like to replay the hand? Please enter yes or no: "))
+    	assert replay_this_hand == "yes" or replay_this_hand == "no", "Invalid answer. Please enter yes or no: "
+    	if replay_this_hand == "yes":
+    		point_from_second_try = play_single_round(hand, n)
+    		num_of_replay_used += 1
+    		if point_from_second_try > point_from_first_try:
+    			print("You scored higher this time. Your new score is: " + str(point_from_second_try))
+    			return point_from_second_try, num_of_replay_used
+    		elif point_from_second_try < point_from_first_try:
+    			print("You scored lower this time. Your previous score is: " + str(point_from_first_try)) 
+    			return point_from_first_try, num_of_replay_used
+    		else:
+    			print("Your score has remained the same: " + str(point_from_first_try))
+    			return point_from_first_try, num_of_replay_used
+    	else:
+    		return point_from_first_try, num_of_replay_used
+    else:
+    	return point_from_first_try, num_of_replay_used
+
 def play_game(word_list):
     """
     Allow the user to play a series of hands
@@ -440,8 +493,8 @@ def play_game(word_list):
     hand = deal_hand(n)
     num_of_hands = int(input("Enter total number of hands: "))
     num_of_letter_substitution_used = 0
-    num_of_replay = 0
-    Total_score   = 0
+    num_of_replay_used = 0
+    total_score   = 0
     current_round = 0
     
     '''
@@ -449,64 +502,30 @@ def play_game(word_list):
       1. Check if substitution is available
       2. Play hand for this round
       3. Check if replay is available
+      4. Miscellaneous tasks
     '''
     while current_round < num_of_hands:
     	print("===========================\n          ROUND {}".format(current_round + 1))
-    	print("Substitution Left: {}\nReplay Left: {}".format(1 - num_of_letter_substitution_used, 1 - num_of_replay))
+    	print("Substitution Left: {}\nReplay Left: {}\nTotal Score: {}".format(1 - num_of_letter_substitution_used, 1 - num_of_replay_used, total_score))
     	print("===========================")
     	display_hand(hand)
     	# Stage 1
     	num_of_letter_substitution_used, hand = \
-    		check_substitute_letter_availability( num_of_letter_substitution_used, hand )
+    		check_substitute_letter_availability(num_of_letter_substitution_used, hand)
 
-    	hand_in_first_round = hand.copy()
-    	word = str(input("Enter word, or !! to indicate that you are finished:"))
-    	while calculate_handlen(hand) != 0:
-    		if word == "!!":
-    			print("Total score: " + str(Total_score) + " points.")
-    			break
-    		else:    
-    			if is_valid_word(word, hand, word_list) == True:
-    				current_score = get_word_score(word, n)
-    				Total_score += current_score 
-    				print (word + " earned " + str(current_score) + " points. Total: " + str(Total_score) + " points.") 
-    				hand = update_hand(hand, word)
-    			else:
-    				hand = update_hand(hand, word)
-    		if calculate_handlen(hand) == 0:
-    			if num_of_replay == 1:
-    				if Total_score > score_from_first_try:
-    					print("You scored higher this time. Your new score is: " + str(Total_score))
-    				elif Total_score == score_from_first_try:
-    					print("Your score has remained the same: " + str(Total_score))
-    				else:
-    					print("You scored lower this time. Your previous score is: " + str(score_from_first_try))	
-    				num_of_replay += 1
-    			else:
-    				print("Ran out of letters. Total score: " + str(Total_score) + " points")
-    				break
-    		else:
-    			display_hand(hand)
-    			word = str(input("Enter word, or !! to indicate that you are finished:"))
+    	# Stage 2
+    	point_from_first_try = play_single_round(hand, n)
     	
-    	if num_of_replay == 0:
-    		replay_this_hand = str(input("Would you like to replay the hand? Please enter yes or no."))
-    		assert replay_this_hand == "yes" or replay_this_hand == "no", "Invalid answer. Please enter yes or no."
-    		if replay_this_hand == "yes":
-    			hand = hand_in_first_round
-    			score_from_first_try = Total_score
-    			#display_hand(hand)
-    			num_of_replay += 1
-    		if replay_this_hand == "no":
-    			hand = deal_hand(n)
-    			#display_hand(hand)
-    			current_round += 1
-    	else:
-    		hand = deal_hand(n)
-    		current_round += 1
+    	# Stage 3
+    	final_point, num_of_replay_used = attempt_retry(num_of_replay_used, hand, point_from_first_try, n)
+
+    	# Stage 4 
+    	total_score += final_point
+    	hand = deal_hand(n)
+    	current_round += 1
 
     print("End of Game.")
-    return Total_score
+    return total_score
     
     
 
